@@ -35,10 +35,13 @@ app.use("/api/messages",messageRoutes)
 
 if(process.env.NODE_ENV==="production"){
     app.use(express.static(path.join(__dirname,"/client/dist")))
+
 app.get("*",(req,res)=>{
     res.sendFile(path.resolve(__dirname,"client","dist","index.html"))
 })
 }
+console.log("__dirname:", __dirname);
+console.log("Serving from:", path.join(__dirname, "/client/dist"));
 
 
 httpServar.listen(port,()=>{
