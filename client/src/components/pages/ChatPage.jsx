@@ -11,7 +11,7 @@ import MessageInput from '../MessageInput'
 const ChatPage = () => {
       const[message,setMessage]=useState("");
  
-  const {messages,subscribeTonMessages,unsubscribeFromMessages,getMessages,typingIndicated}=useMessageStore()
+  const {messages,subscribeTonMessages,unsubscribeFromMessages,getMessages}=useMessageStore()
   const{getMyMatches,matches,isLoadingMyMatches}=useMatchStore();
 
   const {id}=useParams();
@@ -32,19 +32,16 @@ const ChatPage = () => {
       getMyMatches()
       getMessages(id)
       subscribeTonMessages()
-      typingIndicated()
+
     }
     return ()=>{unsubscribeFromMessages()}
 
-  },[getMyMatches,authUser,subscribeTonMessages,unsubscribeFromMessages,getMessages,id,typingIndicated])
+  },[getMyMatches,authUser,subscribeTonMessages,unsubscribeFromMessages,getMessages,id])
   if(isLoadingMyMatches) return <LoadingMessagesUI/>
   if(!match)return   <MatchNotFound/>;
   const matchId = useMatchStore.getState().matches;
 
-// useEffect(()=>{
-//     const socket=getSocket();
-//     socket.on("typing",()=>setTyingId(matches))
-// })
+
   
   return (
     <div className='flex flex-col h-screen bg-gray-100 bg-opacity-50'>
@@ -78,12 +75,6 @@ const ChatPage = () => {
             
           )}
  
-{message.length > 0 && typingId &&  <span 
-       
-        className="position-fixed top-0 bottom-0 text-gray-800 bg-gray-600 rounded p-3 text-white">
-        Typing....
-      </span>
-  }
 
 
 
