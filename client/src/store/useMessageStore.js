@@ -3,9 +3,12 @@ import { axiosInstance } from "../lib/axios"
 import toast from "react-hot-toast"
 import { getSocket } from "../socket/socket.client"
 import { useAuthStore } from "./useAuthStore"
+import { useMatchStore } from "./useMatchStore"
 export const useMessageStore=create((set)=>({
 messages:[],
 loading:true,
+senderId:null,
+typingIds:false,
 
 
 sendMessage:async(receiverId,content)=>{
@@ -32,18 +35,27 @@ set({messages:res.data.messages})
 set({loading:false})
 }
 },
+typingIndicated:async()=>{
+try {
+    const socket=getSocket();
+//     const {id}=useParams();
+    
+//     socket.emit("typing",{senderId:authUser._id,receiverId:id});
+//     socket.on("typing",({senderId,receiverId})=>{
+//   if(receiverId===authUser._id){
+//     setTyingId (true)
+//   }
+//     })
+} catch (error) {
+    console.log("cient typingIndicated",error)
+}
+},
 subscribeTonMessages:()=>{
     const socket = getSocket();
     socket.on("newMessage", ({ message }) => {
         set((state) => ({ messages: [...state.messages, message] }));
     });
-//  const socket=getSocket();
-//  socket.on("newMessage",({message})=>{
-//    set((state)=>({
-//     messages:[...state.messages, message]
-//    }))
-//    toast.success("You got a new message")
-//  })
+
  
 
 },

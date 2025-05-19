@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from "../Header"
 import { useMessageStore } from '../../store/useMessageStore'
 import { useAuthStore } from '../../store/useAuthStore'
@@ -7,28 +7,44 @@ import { Link, useParams } from 'react-router-dom'
 import { Loader, UserX } from 'lucide-react'
 import MessageInput from '../MessageInput'
 
+
 const ChatPage = () => {
-  const {messages,subscribeTonMessages,unsubscribeFromMessages,getMessages}=useMessageStore()
+      const[message,setMessage]=useState("");
+ 
+  const {messages,subscribeTonMessages,unsubscribeFromMessages,getMessages,typingIndicated}=useMessageStore()
   const{getMyMatches,matches,isLoadingMyMatches}=useMatchStore();
+
   const {id}=useParams();
 
   const {authUser}=useAuthStore();
+
+  // console.log("authUser,chat",authUser._id)
  
  
 
   const match=matches.find((m)=>m?._id===id)
+  // socket
+
+
+    // socket
   useEffect(()=>{
     if(authUser && id){
       getMyMatches()
       getMessages(id)
       subscribeTonMessages()
+      typingIndicated()
     }
     return ()=>{unsubscribeFromMessages()}
 
-  },[getMyMatches,authUser,subscribeTonMessages,unsubscribeFromMessages,getMessages,id])
+  },[getMyMatches,authUser,subscribeTonMessages,unsubscribeFromMessages,getMessages,id,typingIndicated])
   if(isLoadingMyMatches) return <LoadingMessagesUI/>
   if(!match)return   <MatchNotFound/>;
+  const matchId = useMatchStore.getState().matches;
 
+// useEffect(()=>{
+//     const socket=getSocket();
+//     socket.on("typing",()=>setTyingId(matches))
+// })
   
   return (
     <div className='flex flex-col h-screen bg-gray-100 bg-opacity-50'>
@@ -40,8 +56,10 @@ const ChatPage = () => {
           <h2 className='text-xl font-semibold text-gray-800'>{match.name}</h2>
         </div>
         <div className='flex-grow overflow-y-auto mb-4
-        bg-white rounded-lg shadow p-4'>
+        bg-white rounded-lg shadow p-4 position-relative'>
+          
           {messages.length===0?(
+
             <p className='text-center text-gray-500
             py-8'>Start Your conversation with {match.name}</p>):(
             messages.map((msg)=>{
@@ -52,14 +70,27 @@ const ChatPage = () => {
                   <span className={`inline-block p-3 rounded-lg max-w-xs
                     lg:max-w-md
                      ${msg.sender===authUser._id?"bg-pink-500 text-white":" bg-gray-200 text-gray-800"}`}>{msg.content}</span>
+                
                 </div>
+                
               )
             })
+            
           )}
+ 
+{message.length > 0 && typingId &&  <span 
+       
+        className="position-fixed top-0 bottom-0 text-gray-800 bg-gray-600 rounded p-3 text-white">
+        Typing....
+      </span>
+  }
+
+
+
         </div>
         
-   
-        <MessageInput match={match}/>
+
+        <MessageInput match={match} message={message} setMessage={setMessage}/>
       </div>
     </div>
   )

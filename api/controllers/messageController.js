@@ -18,6 +18,7 @@ export const sendMessage=async(req,res)=>{
                 message:newMessage
             })
         }
+      
         res.status(201).json({
             success:true,
             message:newMessage
@@ -51,4 +52,31 @@ try {
     message:"Internal server Error"
    }) 
 }
+}
+
+export const typeingIndicater=async(req,res)=>{
+    try {
+        const {receiverId }=req.body;
+        const senderId=req.user.id
+        const io=getIo()
+        const currentUser=getConnectedUsers()
+        const receiverSocketId=currentUser.get(receiverId)
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("typing",{
+                senderId:senderId
+            })
+        }
+        console.log("connectedUsers ",currentUser )
+        res.status(200).json({
+            success: true,
+            message: "Typing event triggered",
+          });
+        
+    } catch (error) {
+      console.log("typeingIndicater error :",error)  
+      res.status(500).json({
+        success:false,
+        message:"Internal server Error"
+      })
+    }
 }

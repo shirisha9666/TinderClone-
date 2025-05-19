@@ -4,8 +4,8 @@ import { Send, Smile } from 'lucide-react';
 import EmojiPicker  from "emoji-picker-react" 
 
 
-const MessageInput = ({match}) => {
-    const[message,setMessage]=useState("");
+const MessageInput = ({match,message,setMessage}) => {
+
     const [showEmojiPicker,setShowEmojiPicker]=useState(false)
     const emojiPickerRef=useRef(null)
     const {sendMessage}=useMessageStore()
