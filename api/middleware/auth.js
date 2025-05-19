@@ -23,7 +23,7 @@ export const protectRoute=async(req,res,next)=>{
       req.user=currentUser
       next();
     } catch (error) {
-        console.log("Error in auth middleware",error)
+        console.log("Error in auth middleware00000000",error)
        if(error instanceof jwt.JsonWebTokenError){
         return res.status(401).json({
             success:false,
